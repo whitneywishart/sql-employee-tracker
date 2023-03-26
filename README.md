@@ -15,5 +15,8 @@ Initiate the app using CIL command:<br>
 <img src="./assets/images/screenshot.png" width="850"><br><br>
 
 
+## Video Walkthrough
+https://drive.google.com/file/d/1V8OxuRZIf1LOB0eHLAfhKWaV1i9WyiS8/view
+
 ## Repo
 https://github.com/whitneywishart/sql-employee-tracker
