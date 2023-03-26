@@ -144,16 +144,8 @@ function viewEmployees() {
         })
         .then((res) => {
             db.query(
-                `SELECT 
-                employee.id, 
-                employee.first_name, 
-                employee.last_name, 
-                role.title, 
-                department.department, 
-                role.salary,
-                employee.manager_id
-            FROM 
-                employee 
+                `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department, role.salary, employee.manager_id 
+                FROM employee 
                 INNER JOIN role ON employee.role_id = role.id 
                 INNER JOIN department ON role.department_id = department.id 
                 LEFT JOIN employee manager ON employee.manager_id = manager.id`,
