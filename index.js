@@ -30,55 +30,62 @@ function questions() {
             type: 'list',
             message: 'Please choose an action to perform:',
             name: 'chooseAction',
-            choices: ['Add a department', 'Add a role', 'Add an employee', 'View all departments', 'View all employees', 'View all roles', 'Update an employee role', 'Exit'],
+            choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Exit'],
         },
 
         )
 
         .then((res) => {
-            // If 'Add a department' is chosen
-            switch (res.chooseAction) {
-                case 'Add a department':
-                    addDepartment();
-                    break;
-            }
-            // If 'Add a role' is chosen
-            switch (res.chooseAction) {
-                case 'Add a role':
-                    addRole();
-                    break;
-            }
-            // If 'Add an employee' is chosen
-            switch (res.chooseAction) {
-                case 'Add an employee':
-                    addEmployee();
-                    break;
-            }
             // If 'View all departments' is chosen
             switch (res.chooseAction) {
                 case 'View all departments':
                     viewDepartments();
                     break;
             }
-            // If 'View all employees' is chosen
-            switch (res.chooseAction) {
-                case 'View all employees':
-                    viewEmployees();
-                    break;
-            }
+
             // If 'View all roles' is chosen
             switch (res.chooseAction) {
                 case 'View all roles':
                     viewRoles();
                     break;
             }
+
+            // If 'View all employees' is chosen
+            switch (res.chooseAction) {
+                case 'View all employees':
+                    viewEmployees();
+                    break;
+            }
+
+            // If 'Add a department' is chosen
+            switch (res.chooseAction) {
+                case 'Add a department':
+                    addDepartment();
+                    break;
+            }
+
+            // If 'Add a role' is chosen
+            switch (res.chooseAction) {
+                case 'Add a role':
+                    addRole();
+                    break;
+            }
+
+            // If 'Add an employee' is chosen
+            switch (res.chooseAction) {
+                case 'Add an employee':
+                    addEmployee();
+                    break;
+            }
+
             // If 'Update an employee role' is chosen
             switch (res.chooseAction) {
                 case 'Update an employee role':
                     updateRole();
                     break;
             }
-                        // If 'Exit' is chosen
+
+            // If 'Exit' is chosen
             switch (res.chooseAction) {
                 case 'Exit':
                     exit();
@@ -89,6 +96,65 @@ function questions() {
 }
 
 // Response functions with nested child questions as needed
+function viewDepartments() {
+    inquirer
+        .prompt({
+            type: 'confirm',
+            message: 'View all departments',
+            name: 'viewDepartments'
+
+        })
+        .then((res) => {
+            db.query(
+                'SELECT * FROM department',
+                (err, res) => {
+                    if (err) throw err;
+                    console.table(res);
+                    questions();
+                }
+            )
+        })
+}
+
+function viewRoles() {
+    inquirer
+        .prompt({
+            type: 'confirm',
+            message: 'View all roles',
+            name: 'viewRoles',
+        })
+        .then((res) => {
+            db.query(
+                'SELECT * FROM role',
+                (err, res) => {
+                    if (err) throw err;
+                    console.table(res);
+                    questions();
+                }
+            )
+        })
+}
+
+function viewEmployees() {
+    inquirer
+        .prompt({
+            type: 'confirm',
+            message: 'View all employees',
+            name: 'viewEmployees',
+        })
+        .then((res) => {
+            db.query(
+                `SELECT employee.id, employee.first_name, employee.last_name, role.title AS job_title, department.department AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id`,
+
+                (err, res) => {
+                    if (err) throw err;
+                    console.table(res);
+                    questions();
+                }
+            )
+        })
+}
+
 function addDepartment() {
     inquirer
         .prompt({
@@ -161,64 +227,6 @@ function addEmployee() {
         });
 };
 
-
-function viewDepartments() {
-    inquirer
-        .prompt({
-            type: 'list',
-            message: 'View all departments',
-            name: 'viewDepartments',
-
-        })
-        .then((res) => {
-            db.query(
-                'SELECT * FROM departments',
-                (err, res) => {
-                    if (err) throw err;
-                    console.table(res);
-                    questions();
-                }
-            )
-        })
-}
-
-function viewEmployees() {
-    inquirer
-        .prompt({
-            type: 'input',
-            message: 'View all employees',
-            name: 'viewEmployees',
-        })
-        .then((res) => {
-            db.query(
-                'SELECT * FROM employee',
-                (err, res) => {
-                    if (err) throw err;
-                    console.table(res);
-                    questions();
-                }
-            )
-        })
-}
-
-function viewRoles() {
-    inquirer
-        .prompt({
-            type: 'input',
-            message: 'View all roles',
-            name: 'viewRoles',
-        })
-        .then((res) => {
-            db.query(
-                'SELECT * FROM role',
-                (err, res) => {
-                    if (err) throw err;
-                    console.table(res);
-                    questions();
-                }
-            )
-        })
-}
 
 function updateRole() {
     inquirer
