@@ -85,12 +85,6 @@ function questions() {
                     break;
             }
 
-            // If 'Exit' is chosen
-            switch (res.chooseAction) {
-                case 'Exit':
-                    exit();
-                    break;
-            }
         }
         )
 }
@@ -144,7 +138,18 @@ function viewEmployees() {
         })
         .then((res) => {
             db.query(
-                `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department, role.salary FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id`,
+                `SELECT 
+                  employee.ID AS 'Employee ID',
+                    employee.first_name AS 'First Name',
+                    employee.last_name AS 'Last Name',
+                    role.title AS Title,
+                    role.salary AS Salary,
+                    department.department AS Department,
+                    CONCAT(manager.first_name, ' ', manager.last_name) AS 'Manager Name'
+                FROM employee employee
+                JOIN role role ON employee.role_id = role.id
+                JOIN department department ON role.department_id = department.id
+                LEFT JOIN employee manager ON employee.manager_id = manager.id`,
 
                 (err, res) => {
                     if (err) throw err;
@@ -199,33 +204,63 @@ function addRole() {
 }
 
 function addEmployee() {
-    inquirer
-        .prompt([
-            {
-                type: "input",
-                message: "What is the employee's first name?",
-                name: "newFirstName",
-            },
-            {
-                type: "input",
-                message: "What is the employee's last name?",
-                name: "newLastName",
-            },
-
-        ])
-        .then((res) => {
-            const employeeQuery = "INSERT INTO employee SET ?";
-            const employeeData = {
-                first_name: res.newFirstName,
-                last_name: res.newLastName,
+    db.query('SELECT * FROM role', (err, roles) => {
+        if (err) console.log(err);
+        roles = roles.map((role) => {
+            return {
+                name: role.title,
+                value: role.id,
             };
-            db.query(employeeQuery, employeeData, (err, res) => {
-                if (err) throw err;
-                console.table(res);
-                questions();
-            });
         });
+        inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    message: 'New employee first name?',
+                    name: 'firstName'
+                },
+                {
+                    type: 'input',
+                    message: 'New employee last name?',
+                    name: 'lastName'
+                },
+                {
+                    type: 'list',
+                    message: 'New employee role?',
+                    name: 'role',
+                    choices: roles
+                },
+                {
+                    type: 'list',
+                    message: 'Who is the new manager?',
+                    name: 'managerId',
+                    choices: [1, 2, 3, 4, 5, 6, 7, 8]
+                }
+            ])
+            .then((data) => {
+                console.log(data.role);
+                db.query(
+                    'INSERT INTO employee SET ?',
+                    {
+                        first_name: data.firstName,
+                        last_name: data.lastName,
+                        role_id: data.role,
+                        manager_id: data.managerId
+                    },
+                    (err) => {
+                        if (err) throw err;
+                        console.log('Employee added;');
+                        viewEmployees();
+
+                    }
+                );
+            });
+
+    });
+
 };
+
+
 
 
 function updateRole() {
