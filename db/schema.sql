@@ -19,7 +19,6 @@ CREATE TABLE
         FOREIGN KEY (department_id) REFERENCES department (id)
     );
 
-
 CREATE TABLE
     employee (
         id INT PRIMARY KEY AUTO_INCREMENT,

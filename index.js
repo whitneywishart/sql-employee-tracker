@@ -30,7 +30,7 @@ function questions() {
             type: 'list',
             message: 'Please choose an action to perform:',
             name: 'chooseAction',
-            choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Exit'],
+            choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role'],
         },
 
         )
@@ -144,7 +144,7 @@ function viewEmployees() {
         })
         .then((res) => {
             db.query(
-                `SELECT employee.id, employee.first_name, employee.last_name, role.title AS job_title, department.department AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id`,
+                `SELECT employee.id, employee.first_name AS 'first name', employee.last_name AS 'last name', role.title, department.department, role.salary FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id`,
 
                 (err, res) => {
                     if (err) throw err;
@@ -256,8 +256,4 @@ function updateRole() {
                     )
                 })
         })
-}
-
-function exit() {
-    questions();
 }
