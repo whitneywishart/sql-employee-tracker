@@ -28,6 +28,5 @@ CREATE TABLE
         department_id INT,
         manager_id INT,
         FOREIGN KEY (role_id) REFERENCES role (id),
-        FOREIGN KEY (department_id) REFERENCES department (id),
-        FOREIGN KEY (manager_id) REFERENCES employee (id)
+        FOREIGN KEY (department_id) REFERENCES department (id)
     );

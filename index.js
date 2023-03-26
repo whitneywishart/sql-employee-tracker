@@ -144,11 +144,7 @@ function viewEmployees() {
         })
         .then((res) => {
             db.query(
-                `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department, role.salary, employee.manager_id 
-                FROM employee 
-                INNER JOIN role ON employee.role_id = role.id 
-                INNER JOIN department ON role.department_id = department.id 
-                LEFT JOIN employee manager ON employee.manager_id = manager.id`,
+                `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department, role.salary FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id`,
 
                 (err, res) => {
                     if (err) throw err;
@@ -208,20 +204,20 @@ function addEmployee() {
             {
                 type: "input",
                 message: "What is the employee's first name?",
-                name: "firstName",
+                name: "newFirstName",
             },
             {
                 type: "input",
                 message: "What is the employee's last name?",
-                name: "lastName",
+                name: "newLastName",
             },
 
         ])
         .then((res) => {
             const employeeQuery = "INSERT INTO employee SET ?";
             const employeeData = {
-                first_name: res.firstName,
-                last_name: res.lastName,
+                first_name: res.newFirstName,
+                last_name: res.newLastName,
             };
             db.query(employeeQuery, employeeData, (err, res) => {
                 if (err) throw err;
